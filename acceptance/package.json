@@ -1,0 +1,13 @@
+{
+  "name": "alphapilot-mcp-client-acceptance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node codex.mjs && node harness.mjs && node claude.mjs",
+    "test:http": "TRANSPORT=http node codex.mjs && TRANSPORT=http node harness.mjs && TRANSPORT=http node claude.mjs"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh-mcp-client": "0.0.1-rc.1",
+    "@anthropic-ai/claude-code": "2.1.273"
+  }
+}

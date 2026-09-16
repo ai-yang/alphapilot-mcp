@@ -1,0 +1,50 @@
+{
+  "name": "alphapilot-mcp",
+  "version": "0.1.0",
+  "description": "MCP research workbench for AlphaPilot over HTTP",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "alphapilot-mcp": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "contract",
+    "README.md",
+    "LICENSE",
+    "examples",
+    "Dockerfile",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "contract:generate": "openapi-typescript contract/openapi-v1.json -o src/api.generated.ts",
+    "prepack": "npm run build",
+    "docs:tools": "npm run build && node scripts/tool-reference.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.0.0",
+    "@modelcontextprotocol/node": "2.0.0",
+    "@modelcontextprotocol/server": "2.0.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "openapi-typescript": "^7.0.0",
+    "prettier": "3.9.6",
+    "typescript": "^5.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ai-yang/alphapilot-mcp.git"
+  },
+  "homepage": "https://github.com/ai-yang/alphapilot-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/ai-yang/alphapilot-mcp/issues"
+  }
+}

@@ -1,0 +1,3 @@
+[mcp_servers.alphapilot]
+url = "https://mcp.example.com/mcp"
+bearer_token_env_var = "ALPHAPILOT_MCP_TOKEN"

@@ -1,0 +1,89 @@
+{
+  "date": "2026-09-16",
+  "clients": [
+    {
+      "client": "Codex",
+      "version": "0.154.0-alpha.6.2",
+      "status": "passed",
+      "transport": "stdio",
+      "backend": "deterministic HTTP fixture",
+      "workflow": [
+        "discover",
+        "validate",
+        "submit",
+        "query",
+        "cancel"
+      ]
+    },
+    {
+      "client": "Codex",
+      "version": "0.154.0-alpha.6.2",
+      "status": "passed",
+      "transport": "http",
+      "backend": "deterministic HTTP fixture",
+      "workflow": [
+        "discover",
+        "validate",
+        "submit",
+        "query",
+        "cancel"
+      ]
+    },
+    {
+      "client": "DeepSeek Harness MCP bridge",
+      "version": "0.0.1-rc.1",
+      "status": "passed",
+      "transport": "stdio",
+      "backend": "deterministic HTTP fixture",
+      "workflow": [
+        "discover",
+        "validate",
+        "submit",
+        "query",
+        "cancel"
+      ]
+    },
+    {
+      "client": "DeepSeek Harness MCP bridge",
+      "version": "0.0.1-rc.1",
+      "status": "passed",
+      "transport": "http",
+      "backend": "deterministic HTTP fixture",
+      "workflow": [
+        "discover",
+        "validate",
+        "submit",
+        "query",
+        "cancel"
+      ]
+    },
+    {
+      "client": "Claude Code",
+      "version": "2.1.273",
+      "status": "passed",
+      "transport": "stdio",
+      "backend": "deterministic HTTP fixture",
+      "workflow": [
+        "discover",
+        "validate",
+        "submit",
+        "query",
+        "cancel"
+      ]
+    },
+    {
+      "client": "Claude Code",
+      "version": "2.1.273",
+      "status": "passed",
+      "transport": "http",
+      "backend": "deterministic HTTP fixture",
+      "workflow": [
+        "discover",
+        "validate",
+        "submit",
+        "query",
+        "cancel"
+      ]
+    }
+  ]
+}

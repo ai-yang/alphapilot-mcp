@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "alphapilot": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "alphapilot-mcp@0.1.0",
+        "serve",
+        "--transport",
+        "stdio"
+      ],
+      "env": {
+        "ALPHAPILOT_BASE_URL": "${ALPHAPILOT_BASE_URL}",
+        "ALPHAPILOT_RESEARCH_TOKEN": "${ALPHAPILOT_RESEARCH_TOKEN}"
+      }
+    }
+  }
+}

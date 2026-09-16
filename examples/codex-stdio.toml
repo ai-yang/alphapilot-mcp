@@ -1,0 +1,5 @@
+[mcp_servers.alphapilot]
+command = "npx"
+args = ["-y","alphapilot-mcp@0.1.0","serve","--transport","stdio"]
+env_vars = ["ALPHAPILOT_BASE_URL", "ALPHAPILOT_RESEARCH_TOKEN"]
+startup_timeout_sec = 30

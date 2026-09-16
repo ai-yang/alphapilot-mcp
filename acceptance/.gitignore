@@ -1,0 +1,4 @@
+node_modules/
+*-report.json
+*-results.log
+claude-mcp.json

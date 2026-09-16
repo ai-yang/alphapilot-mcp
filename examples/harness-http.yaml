@@ -1,0 +1,8 @@
+- id: mcp-alphapilot
+  name: '@deepseek-ai/dsh-mcp-client'
+  config:
+    serverName: alphapilot
+    transport: streamable-http
+    url: https://mcp.example.com/mcp
+    headers:
+      Authorization: !!js '`Bearer ${process.env.ALPHAPILOT_MCP_TOKEN}`'

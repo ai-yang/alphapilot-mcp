@@ -1,0 +1,4 @@
+src/api.generated.ts
+contract/
+node_modules/
+dist/
