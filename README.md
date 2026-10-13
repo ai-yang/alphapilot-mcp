@@ -6,9 +6,11 @@
 
 ## 安装与启动
 
-本仓库提供可安装 tarball，尚未发布到公共 npm registry。发布前使用以下任一种方式：
+本仓库源码公开，可直接克隆并构建；尚未发布到公共 npm registry。使用本地源码或自行生成的 tarball 安装：
 
 ```sh
+git clone https://github.com/ai-yang/alphapilot-mcp.git
+cd alphapilot-mcp
 npm ci
 npm run build
 node dist/cli.js --help
@@ -29,7 +31,7 @@ alphapilot-mcp serve --transport stdio
 
 MCP 不需要模型 API Key。自主挖掘使用 AlphaPilot 后端已配置的模型。环境变量需由启动器显式提供；程序不自动读取工作区 `.env`。stdio 的 stdout 仅用于协议，日志写 stderr。
 
-发布到 npm 后，可使用 `npx -y alphapilot-mcp@0.1.0 serve --transport stdio`。`config` 输出的是这个发布后的模板；发布前将模板中的启动命令替换为已安装的 `alphapilot-mcp`，或 `node /绝对路径/dist/cli.js`。
+`config --client codex --transport stdio` 会使用当前 Node 和已构建 CLI 的绝对路径生成可直接使用的配置，无需公共 npm 包。移动安装目录后请重新生成配置；仓库 `examples/` 中的绝对路径占位符需要替换为本机路径。
 
 ## 客户端配置
 
@@ -38,6 +40,8 @@ alphapilot-mcp config --client codex --transport stdio
 alphapilot-mcp config --client claude-code --transport http
 alphapilot-mcp config --client deepseek-harness --transport stdio
 ```
+
+源码构建后也可使用 `node dist/cli.js config --client codex --transport stdio`。将输出加入 Codex 的 `~/.codex/config.toml`，并确保启动 Codex 的环境中存在 `ALPHAPILOT_BASE_URL` 和 `ALPHAPILOT_RESEARCH_TOKEN`；重启后在 CLI 中用 `/mcp` 检查连接。
 
 配置模板见 [examples](examples)。命令只打印模板，不修改客户端配置、不启动任务。服务器名统一为 `alphapilot`。
 
@@ -49,7 +53,9 @@ alphapilot-mcp config --client deepseek-harness --transport stdio
 
 ## 工具范围
 
-共 87 个具名工具，默认仅开启 `core` 的 44 个工具。工具可见性取部署组、后端算法/功能能力和当前凭据权限的交集；模型不能通过参数解锁组。调用时重新检查凭据能力。
+创建、更新、导入和删除股票池还需后端 `data:write` 权限，因为这些操作会更新数据集的 instruments。仅具备 `research:read,research:write,jobs:submit,jobs:cancel` 的凭据不会展示这些写入工具；读取股票池和使用已有股票池回测不受影响。
+
+共 87 个具名工具，默认仅开启包含 44 个工具的 `core` 组。工具可见性取部署组、后端算法/功能能力和当前凭据权限的交集；模型不能通过参数解锁组。调用时重新检查凭据能力。
 
 | 组 | 内容 | 默认 |
 |---|---|---|

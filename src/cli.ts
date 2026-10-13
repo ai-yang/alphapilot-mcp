@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
+import { fileURLToPath } from "node:url";
 import {
   Client,
   StreamableHTTPClientTransport,
@@ -13,12 +14,17 @@ import { Credentials } from "./auth.js";
 import { uploadFile, downloadFile, fileRequest } from "./files.js";
 import { available, registry } from "./registry.js";
 export function template(client: string, transport: string) {
-  const command = "npx";
-  const args = ["-y", "alphapilot-mcp@0.1.0", "serve", "--transport", "stdio"];
+  const command = process.execPath;
+  const args = [
+    fileURLToPath(import.meta.url),
+    "serve",
+    "--transport",
+    "stdio",
+  ];
   if (client === "codex")
     return transport === "http"
       ? `[mcp_servers.alphapilot]\nurl = "https://mcp.example.com/mcp"\nbearer_token_env_var = "ALPHAPILOT_MCP_TOKEN"\n`
-      : `[mcp_servers.alphapilot]\ncommand = "${command}"\nargs = ${JSON.stringify(args)}\nenv_vars = ["ALPHAPILOT_BASE_URL", "ALPHAPILOT_RESEARCH_TOKEN"]\nstartup_timeout_sec = 30\n`;
+      : `[mcp_servers.alphapilot]\ncommand = ${JSON.stringify(command)}\nargs = ${JSON.stringify(args)}\nenv_vars = ["ALPHAPILOT_BASE_URL", "ALPHAPILOT_RESEARCH_TOKEN"]\nstartup_timeout_sec = 30\n`;
   if (client === "claude-code")
     return (
       JSON.stringify(
@@ -53,7 +59,7 @@ export function template(client: string, transport: string) {
       `- id: mcp-alphapilot\n  name: '@deepseek-ai/dsh-mcp-client'\n  config:\n    serverName: alphapilot\n` +
       (transport === "http"
         ? `    transport: streamable-http\n    url: https://mcp.example.com/mcp\n    headers:\n      Authorization: !!js '\u0060Bearer \u0024{process.env.ALPHAPILOT_MCP_TOKEN}\u0060'\n`
-        : `    transport: stdio\n    command: npx\n    args: ${JSON.stringify(args)}\n    env:\n      ALPHAPILOT_BASE_URL: !!js process.env.ALPHAPILOT_BASE_URL\n      ALPHAPILOT_RESEARCH_TOKEN: !!js process.env.ALPHAPILOT_RESEARCH_TOKEN\n`)
+        : `    transport: stdio\n    command: ${JSON.stringify(command)}\n    args: ${JSON.stringify(args)}\n    env:\n      ALPHAPILOT_BASE_URL: !!js process.env.ALPHAPILOT_BASE_URL\n      ALPHAPILOT_RESEARCH_TOKEN: !!js process.env.ALPHAPILOT_RESEARCH_TOKEN\n`)
     );
   throw new Error("Supported clients: codex, claude-code, deepseek-harness");
 }

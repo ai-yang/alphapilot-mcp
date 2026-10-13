@@ -272,20 +272,22 @@ for (const [singular, plural, alias] of [
   const group: Group = singular === "signal_session" ? "signals" : "core";
   const write =
     singular === "signal_session" ? "signals:write" : "research:write";
+  const writeScopes = [
+    "research:read",
+    write,
+    ...(singular === "stock_pool" ? ["data:write"] : []),
+  ];
   add(`list_${plural}`, `list_${plural}`, group);
   add(`get_${singular}`, `get_${singular}`, group, undefined, undefined, {
     key: alias,
   });
-  add(`create_${singular}`, `create_${singular}`, group, [
-    "research:read",
-    write,
-  ]);
+  add(`create_${singular}`, `create_${singular}`, group, writeScopes);
   if (singular !== "signal_session")
     add(
       `update_${singular}`,
       `update_${singular}`,
       group,
-      ["research:read", write],
+      writeScopes,
       undefined,
       { key: alias },
     );
@@ -293,7 +295,7 @@ for (const [singular, plural, alias] of [
     `delete_${singular}`,
     `delete_${singular}`,
     "cleanup",
-    ["research:read", write],
+    writeScopes,
     undefined,
     { key: alias },
   );
@@ -302,6 +304,7 @@ for (const [singular, plural, alias] of [
     add(`import_${plural}`, `import_${singular}`, "files", [
       "research:read",
       "research:write",
+      ...(singular === "stock_pool" ? ["data:write"] : []),
     ]);
   }
 }

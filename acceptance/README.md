@@ -9,3 +9,12 @@
 - Claude Code：实际 CLI 连接 MCP；本地 Anthropic 流式协议夹具按顺序生成工具调用，无付费模型请求。CLI 显式 --bare、--strict-mcp-config 和 MCP 工具允许列表。
 
 每个客户端验证发现、表达式验证、提交、查询、取消，结果写在本目录 *-report.json；不修改用户全局客户端配置。该测试检验客户端协议与工具兼容性，真实行情/模型验收另见 docs/acceptance.md。
+
+仅验收 Codex 时，无需安装本目录中其他客户端的依赖。在仓库根目录执行：
+
+```sh
+node acceptance/codex.mjs
+TRANSPORT=http node acceptance/codex.mjs
+```
+
+stdio 验收直接使用 `config --client codex --transport stdio` 生成的配置，并断言工具发现及调用结果。报告自动记录当前 Codex / Node 版本。可通过 `MCP_INSTALLED_CLI=/absolute/path/to/installed/dist/cli.js` 验证独立安装的 tarball。

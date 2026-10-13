@@ -61,12 +61,20 @@ test("inline/library backtest modes and bounded parameters follow backend schema
   assert.ok(!validate({ ...args, idempotency_key: "" }));
 });
 test("groups, algorithm capabilities and scopes intersect; models cannot enable data writes through schedules", () => {
-  for (const name of ["create_schedule", "update_schedule", "pause_schedule", "resume_schedule"]) {
-    assert.ok(!available(
-      registry.find((t) => t.name === name),
-      { ...caps, scopes: ["research:read", "schedules:write"] },
-      new Set(["schedules"]),
-    ), `${name} must require job submission permission`);
+  for (const name of [
+    "create_schedule",
+    "update_schedule",
+    "pause_schedule",
+    "resume_schedule",
+  ]) {
+    assert.ok(
+      !available(
+        registry.find((t) => t.name === name),
+        { ...caps, scopes: ["research:read", "schedules:write"] },
+        new Set(["schedules"]),
+      ),
+      `${name} must require job submission permission`,
+    );
   }
   const data = registry.find((t) => t.name === "download_data");
   assert.ok(!available(data, caps, new Set(["core"])));
@@ -105,6 +113,40 @@ test("mining requires finite bounds and advancing requires explicit session and 
     registry.find((t) => t.name === "advance_daily_signals").input,
   );
   assert.ok(!validate({ dataset_id: "x", idempotency_key: "key" }));
+});
+
+test("stock pool writes require the backend data permission in every tool group", () => {
+  const groups = new Set(["core", "files", "cleanup"]);
+  const researchOnly = {
+    ...caps,
+    scopes: caps.scopes.filter((scope) => scope !== "data:write"),
+  };
+  for (const name of [
+    "create_stock_pool",
+    "update_stock_pool",
+    "import_stock_pools",
+    "delete_stock_pool",
+  ]) {
+    const tool = registry.find((item) => item.name === name);
+    assert.equal(available(tool, researchOnly, groups), false, name);
+    assert.equal(available(tool, caps, groups), true, name);
+  }
+  for (const name of [
+    "list_stock_pools",
+    "get_stock_pool",
+    "export_stock_pools",
+    "create_factor",
+  ]) {
+    assert.equal(
+      available(
+        registry.find((item) => item.name === name),
+        researchOnly,
+        groups,
+      ),
+      true,
+      name,
+    );
+  }
 });
 
 function example(schema) {

@@ -2,10 +2,9 @@
   "mcpServers": {
     "alphapilot": {
       "type": "stdio",
-      "command": "npx",
+      "command": "node",
       "args": [
-        "-y",
-        "alphapilot-mcp@0.1.0",
+        "/absolute/path/alphapilot-mcp/dist/cli.js",
         "serve",
         "--transport",
         "stdio"

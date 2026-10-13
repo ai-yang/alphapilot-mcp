@@ -1,8 +1,11 @@
 import { fileURLToPath } from "node:url";
 const acceptanceDir = fileURLToPath(new URL(".", import.meta.url));
-const cliPath = fileURLToPath(new URL("../dist/cli.js", import.meta.url));
+const cliPath =
+  process.env.MCP_INSTALLED_CLI ??
+  fileURLToPath(new URL("../dist/cli.js", import.meta.url));
 import { gateway } from "./gateway.mjs";
-import { spawn } from "node:child_process";
+import { spawn, execFileSync } from "node:child_process";
+import assert from "node:assert/strict";
 import { createInterface } from "node:readline";
 import { backend } from "../tests/helpers.mjs";
 import { writeFile } from "node:fs/promises";
@@ -26,14 +29,15 @@ const child = spawn(
         "app-server",
       ]
     : [
-        "-c",
-        'mcp_servers.alphapilot.command="node"',
-        "-c",
-        `mcp_servers.alphapilot.args=${JSON.stringify([cliPath, "serve"])}`,
-        "-c",
-        'mcp_servers.alphapilot.env_vars=["ALPHAPILOT_BASE_URL","ALPHAPILOT_RESEARCH_TOKEN"]',
-        "-c",
-        "mcp_servers.alphapilot.startup_timeout_sec=30",
+        ...execFileSync(
+          process.execPath,
+          [cliPath, "config", "--client", "codex", "--transport", "stdio"],
+          { encoding: "utf8" },
+        )
+          .trim()
+          .split("\n")
+          .slice(1)
+          .flatMap((line) => ["-c", `mcp_servers.alphapilot.${line}`]),
         "app-server",
       ],
   { env, cwd: acceptanceDir, stdio: ["pipe", "pipe", "pipe"] },
@@ -69,7 +73,9 @@ const rpc = (method, params = {}) =>
   });
 const report = {
   client: "Codex",
-  version: "0.154.0-alpha.6.2",
+  version: execFileSync("codex", ["--version"], { encoding: "utf8" }).trim(),
+  node: process.version,
+  tested_at: new Date().toISOString(),
   transport: remote ? "http" : "stdio",
   backend: "deterministic HTTP fixture",
 };
@@ -88,6 +94,9 @@ try {
   const threadId = start.thread.id;
   const inventory = await rpc("mcpServerStatus/list", { threadId });
   report.inventory = inventory;
+  const server = inventory.data.find((item) => item.name === "alphapilot");
+  assert.ok(server, "AlphaPilot must appear in Codex's MCP inventory");
+  assert.equal(Object.keys(server.tools).length, 44);
   const call = async (tool, args = {}) => {
     const r = await rpc("mcpServer/tool/call", {
       threadId,
@@ -100,7 +109,10 @@ try {
     return r;
   };
   await call("get_capabilities");
-  await call("validate_factors", { expressions: ["invalid()"] });
+  const validation = await call("validate_factors", {
+    expressions: ["invalid()"],
+  });
+  assert.equal(validation.structuredContent.data.results[0].valid, false);
   const submitted = await call("submit_factor_backtest", {
     dataset_id: "test",
     factor_source: {
@@ -110,8 +122,11 @@ try {
     idempotency_key: "codex-acceptance",
   });
   const job = [...upstream.jobs.values()][0].job;
-  await call("get_job", { job_id: job.job_id });
-  await call("cancel_job", { job_id: job.job_id });
+  assert.equal(submitted.structuredContent.data.job_id, job.job_id);
+  const queried = await call("get_job", { job_id: job.job_id });
+  assert.equal(queried.structuredContent.data.status, "queued");
+  const cancelled = await call("cancel_job", { job_id: job.job_id });
+  assert.equal(cancelled.structuredContent.data.status, "cancelled");
   report.status = job.status === "cancelled" ? "passed" : "failed";
 } catch (e) {
   report.status = "failed";

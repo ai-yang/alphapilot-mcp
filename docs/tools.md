@@ -42,11 +42,11 @@
 | import_strategies | files | POST /api/v1/strategies/import | research:read, research:write |
 | list_stock_pools | core | GET /api/v1/stock-pools | research:read |
 | get_stock_pool | core | GET /api/v1/stock-pools/{key} | research:read |
-| create_stock_pool | core | POST /api/v1/stock-pools | research:read, research:write |
-| update_stock_pool | core | PATCH /api/v1/stock-pools/{key} | research:read, research:write |
-| delete_stock_pool | cleanup | DELETE /api/v1/stock-pools/{key} | research:read, research:write |
+| create_stock_pool | core | POST /api/v1/stock-pools | research:read, research:write, data:write |
+| update_stock_pool | core | PATCH /api/v1/stock-pools/{key} | research:read, research:write, data:write |
+| delete_stock_pool | cleanup | DELETE /api/v1/stock-pools/{key} | research:read, research:write, data:write |
 | export_stock_pools | files | POST /api/v1/stock-pools/export | research:read |
-| import_stock_pools | files | POST /api/v1/stock-pools/import | research:read, research:write |
+| import_stock_pools | files | POST /api/v1/stock-pools/import | research:read, research:write, data:write |
 | list_signal_sessions | signals | GET /api/v1/signal-sessions | research:read |
 | get_signal_session | signals | GET /api/v1/signal-sessions/{key} | research:read |
 | create_signal_session | signals | POST /api/v1/signal-sessions | research:read, signals:write |

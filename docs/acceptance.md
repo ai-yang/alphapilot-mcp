@@ -1,5 +1,23 @@
 # 验收记录
 
+## 2026-10-13：Codex 接入复验
+
+环境：Node `v24.18.0`；Codex CLI `0.162.0-alpha.17.2`；MCP client `2.2.0`，server/node `2.0.0`。
+
+- MCP 18 项自动化测试全部通过：87 个工具的契约与路由映射、权限/分组、幂等、取消、文件传输校验，以及两种传输和两个协议版本。
+- AlphaPilot 研究 API、运行时、检查点与权限相关 63 项测试通过。两仓库 OpenAPI SHA-256 一致，重新生成类型无差异。
+- 当前 Codex 原生 app-server 的 stdio / Streamable HTTP 均完成发现 44 个核心工具、表达式验证、提交、查询和取消。stdio 直接使用 CLI 配置生成器的输出，不发起模型对话。
+- Codex stdio 连接真实 AlphaPilot 后端，在隔离工作区中完成目录读取、有效/未来引用表达式验证、因子创建/查询/更新、股票池创建、幂等提交、取消及 `single_ic` 回测。复制 20 个本地行情标的作为测试输入，评估期为 2025 年第一季度，得到 55 个有效评估交易日、1,100 条有效观测和 2 个产物，并通过 MCP 读取 IC 评估 JSON。测试凭据已撤销，临时服务已停止。
+- npm tarball 在独立目录仅安装生产依赖后，完成工具发现、表达式验证、提交、查询和取消。生产依赖审计无已知漏洞。
+
+本次修复：stdio 配置生成器和示例不再依赖尚未发布的 npm 包；股票池创建/更新/导入/删除工具正确要求后端 `data:write` 权限；MCP 客户端升级至修复已知 OAuth 漏洞的版本。仅授予 README 基础研究权限时，股票池写入工具隐藏，实际可见数还受算法依赖影响。
+
+复验命令：`npm ci && npm test`、`node acceptance/codex.mjs`、`TRANSPORT=http node acceptance/codex.mjs`；可通过 `MCP_INSTALLED_CLI` 验证已安装的 CLI，见 [客户端验收](../acceptance/README.md)。真实数据测试使用本地隔离工作区；现有真实研究复现入口见 [README](../README.md#真实数据验收复现)。
+
+范围：本次未重新执行 LLM 自主挖掘、AFF/GP/RL、报告提取、模拟信号或调度的真实计算，也未重新验收 Claude Code、DeepSeek Harness 或 Docker。下面保留 2026-09-16 的历史记录，不能视为这些功能本次重新通过。
+
+## 2026-09-16：历史验收
+
 日期：2026-09-16。Node v22.14.0；MCP SDK server/client/node 2.0.0。
 
 ## 已执行

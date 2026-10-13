@@ -3,8 +3,8 @@
   config:
     serverName: alphapilot
     transport: stdio
-    command: npx
-    args: ["-y","alphapilot-mcp@0.1.0","serve","--transport","stdio"]
+    command: node
+    args: ["/absolute/path/alphapilot-mcp/dist/cli.js", "serve", "--transport", "stdio"]
     env:
       ALPHAPILOT_BASE_URL: !!js process.env.ALPHAPILOT_BASE_URL
       ALPHAPILOT_RESEARCH_TOKEN: !!js process.env.ALPHAPILOT_RESEARCH_TOKEN
